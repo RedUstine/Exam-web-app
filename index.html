@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pavel | Exam</title>
+    <noscript>Your browser is too old, please upgrade your or turn on Javascript execution on this page</noscript>
+    <base href="./">
+    <meta name="author" content="John Doe" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" href="./all.min.css">
+    <script src="./all.min.js"></script>
+    <script src="./jquery.min.js"></script>
+   <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+    <main>
+        <section class="alert-box open">
+            <aside class="alert-card card">
+                <p class="alert-title">Welcome to NIIT Exam Panel</p>
+                <span class="alert-header">
+                    <div class="alert-icon fa-flash">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <div class="alert-info">
+                        <!-- <p class="alert-subtitle">You have completed the exam</p> -->
+                        <h4 class="alert-text">You Click on Start Button to begin</h4>
+                    </div>
+                </span>
+                <div class="alert-body">
+                </div>
+                <div class="alert-foot">
+                    <button class="alert-btn alert-restart"><i class="fa fa-check"></i> Start</button>
+                    <button class="alert-btn alert-close"><i class="fa fa-close"></i> Close</button>
+                </div>
+            </aside>
+        </section>
+        <section class="card">	
+            <article class="card_request">
+                <aside class="qst-card">
+                    <div class="qst-head">
+                        <button class="qst-label">Question 1 of 10</button>
+                        <button class="qst-label">Time Left: 1min59secs </button>
+                    </div>
+                    <div class="qst-details">
+                        <div class="qst-info">
+                            <h4 class="qst-name">1. Javascript is a scripting language from Java</h4>
+                        </div>
+                        <div class="qst-options">
+                            <button class="qst-option">Java</button>
+                            <button class="qst-option">C#</button>
+                            <button class="qst-option">Swift</button>
+                            <button class="qst-option">Kotlin</button>
+                        </div>
+                    </div>
+                    <div class="qst-extras">
+                        <button class="qst-prev"><i class="fa fa-arrow-left"></i> &nbsp;Prev</button>
+                        <button class="qst-next">Next &nbsp;<i class="fa fa-arrow-right"></i> </button>
+                    </div>
+                </aside>
+            </article>
+        </section>
+    </main>
+    <script>
+        let qstTime = $(".qst-label:nth-of-type(2)"), qstLabel = $(".qst-label"), qstName = $(".qst-name"), qstOptions = $(".qst-options"), qstPrev = $(".qst-prev"), qstNext = $(".qst-next");
+        let alertBox = $(".alert-box"), alertText = $(".alert-text"), alertRestart = $(".alert-restart"), alertClose = $(".alert-close"), alertIcon = $(".alert-icon");
+
+        $(".alert-box").on("click", function(){
+            $(this).removeClass("open")
+        })
+        const questions = new Array(
+            {
+                id: 123,
+                question: "What does SaSS stand for in web design?",
+                options: ["Snythetic acess SHow Stopper", "Sumptous assembly Sugar Syntax", "Synthetically aweseome StyleSheet", "Showoff aweful StyleSheet"],
+                answer: "Synthetically aweseome StyleSheet",
+                mark: 10
+            },
+            {
+                id: 124,
+                question: "What is the key to acdemic excellence?",
+                options: ["Patience", "Dilligence", "Lethargy", "Complacency"],
+                answer: "Dilligence",
+                mark: 10
+            },
+            {
+                id: 125,
+                question: "What is the smallest number divisible by 1 to 10 without a remainder?",
+                options: [2250, 5022, 2052, 2520],
+                answer: 2520,
+                mark: 10
+            }
+        );
+        let questIndex = 0, answerArray = new Array(questions.length), marks = 0;
+
+        const  loadQuestions = (questIndex)=>{
+            const currentQuestion = questions[questIndex];
+            const {id, question, options, answer, mark} = currentQuestion;
+            //destructuring
+            qstLabel.html(`Questions ${questIndex + 1} of ${questions.length}`)
+            qstName.html(`${questIndex+1}. ${question}`)
+            qstOptions.empty(); //or qstOptions.html("")
+            let alphas = ["a", "b", "c", "d"]
+            options.forEach((option, i)=>{
+                qstOptions.append(`<button class="qst-option" onClick="checkAnswer('${option}', ${questIndex})">${alphas[i]}. ${option}</button>`)
+            });
+        }
+
+        loadQuestions(questIndex);
+
+        qstNext.on("click", function(){
+            // alternate way to write the below code in tenery operator
+            // questIndex = questIndex >= questions.length-1 ? questions.length-1 : questIndex+1
+            if (questIndex >= questions.length-1) {
+                questIndex = questions.length-1
+                $(this).html(`Submit`)
+                $(this).css("background", "#57f036")
+                showScores();
+            }else{
+                questIndex += 1;
+                $(this).html(`Next <i class="fa fa-arrow-right"></i>`)
+                $(this).css("background", "#eed719dd")
+            }
+            console.log({questIndex})
+            loadQuestions(questIndex)
+        })
+
+        qstPrev.on("click", function(){
+            qstNext.html(`Next <i class="fa fa-arrow-right"></i>`)
+            qstNext.css("background", "#eed719dd")
+            // questIndex = questIndex < 1 ? 0 : questIndex - 1  
+            if (questIndex < 1) {
+                questIndex = 0
+            }else{
+                questIndex -= 1;
+            }      
+            console.log(questIndex)    
+            loadQuestions(questIndex)
+          
+        })
+        
+
+        function   checkAnswer(option, questIndex){
+            answerArray[questIndex] = option
+            qstNext.click();
+            console.log(answerArray)
+        }
+
+        function showScores(){
+            marks= 0
+            questions.forEach(function(question, index){
+                if (question.answer == answerArray[index]) {
+                    marks += question.mark;
+                }
+            })
+            alertBox.html(`<aside class="alert-card card">
+                <p class="alert-title"> Exam Completed</p>
+                <span class="alert-header">
+                    <div class="alert-icon fa-flash">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <div class="alert-info">
+                        <p class="alert-subtitle">You have completed the exam</p>
+                        <h4 class="alert-text">Your Final Score is ${marks}</h4>
+                    </div>
+                </span>
+                <div class="alert-body">
+                </div>
+                <div class="alert-foot">
+                    <button class="alert-btn alert-close"><i class="fa fa-close"></i> Close</button>
+                </div>
+            </aside>`)
+
+            alertBox.addClass("open")
+        }
+    </script>
+  </body>
+</html>
+
